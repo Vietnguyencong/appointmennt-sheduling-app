@@ -1,0 +1,170 @@
+<div class="container">
+<p id="notice" class="text-center"><%= notice %></p>
+<div style="" class="justify-content-center ">
+  <%if current_user%>
+        
+        <hr>
+        <div class="row">
+        <div class="col  text-center" style="padding:0 0">
+         <!--table-->
+         <%if current_user.booked%>
+            <table class="table">
+              <thead class="thead-dark">
+                <tr class="">
+                  <th scope="col">Date</th>
+                  <th scope="col">Time</th>
+                  <th scope="col">Unbook</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <%if @user_appts.last%>
+                  <tr>
+                  <% appt = @user_appts.last%>
+                    <td><%= appt.get_date%></td>
+                    <td><%= appt.get_time%></td>
+                    <%if !appt.finsihed%>
+                    <td><%= link_to "Unbook", unbook_appointment_path(appt), method: :put, class:"",:data => {:confirm => 'Are you sure you want to UNBOOK this?'} %></td>
+                    <td class="badge badge-primary">Comming</td>
+                    <% else %>
+                    <td>disable</td>
+                    <td class = "badge badge-success">Finished</td>
+                    <% end %>
+                  </tr>
+                  <tr>
+                    <td><strong>Your Questions: </strong></td>
+                    <td colspan="2"><%=appt.questions%></td>
+                  </tr> 
+                  <% end %>
+              </tbody>
+              </table> 
+              <% end %>
+      
+       
+    </div>
+     
+         <div class="col d-flex justify-content-center ">
+          <!--  
+            <div class="image"> 
+             <%#= image_tag("profile.png", {:style => "width:200px;"}) %>
+             </div>
+            <div class = "name"> nguyen cong viet</div>
+         </div>
+          -->
+          <div class="p-2"><%= image_tag(current_user.display_avatar, {:style => "width:100px;"})%> </div>
+          <div class =" p-2">
+            <div class=""><strong>Name: </strong><%=current_user.name%></div>
+            <div class=""><strong>Session: </strong><%=current_user.class_session%></div>
+            <div class=""><strong>ID: </strong><%=current_user.student_id%></div>
+          </div>
+         </div>
+  <% else %>
+  <br>
+  <div class="text-center">
+  <h4 class="text-center">Login to schedule an appointment!</h4><br>
+    <p class="text-center">vietdbm@gmail.com</p>
+    <% if !user_signed_in? %>
+      <%= link_to 'Login', new_user_session_path, class:"btn btn-outline-success my-2 my-sm-0" %>  
+      <%= link_to 'Sign Up', new_user_registration_path, class:"btn btn-outline-success my-2 my-sm-0" %>  
+    <% end %>
+  <% end %>
+  </div>
+<br>
+
+</div> 
+<br>
+<div class="tab">
+  <button class="tablinks" onclick="openCity(event, 'London')" id="defaultOpen">All</button>
+  <button class="tablinks" onclick="openCity(event, 'Paris')">Your</button>
+  <button class="tablinks" onclick="openCity(event, 'Tokyo')">Available</button>
+</div>
+
+<div id="London" class="tabcontent">
+  <h3>All Appointments</h3>
+  <div>
+  <%= month_calendar(events: @appointments, attribute: :starttime) do |date, appointments| %>
+    <%= date.strftime("%d") %>
+    <% appointments.each do |a| %>
+      <div>
+      <%if !a.finsihed%>
+        <%if !a.booked%>
+          <%=link_to a.get_time, appointment_path(a), class:"badge badge-success"%>
+        <% else %>
+          <span style="color:" class="badge badge-info"><%=a.get_time%></span>
+        <% end %>
+      <% else %>
+          <span style="color:" class="badge badge-dark"><%=a.get_time%></span>
+      <% end %>
+      
+    </div>
+    <% end %>
+  <% end %>
+  </div>
+</div>
+
+<div id="Paris" class="tabcontent">
+  <h3>Your Appointments</h3>
+  <%if current_user%>
+    <div>
+
+      <%= month_calendar(events: @user_appts, attribute: :starttime) do |date, appointments| %>
+        <%= date.strftime("%d") %>
+        <% appointments.each do |a| %>
+          <%if !a.finsihed%>
+          <div>
+            <span style="color:" class="badge badge-info"><%=a.get_time%></span>
+          </div>
+          <% else %>
+            <span style="color:" class="badge badge-dark"><%=a.get_time%></span>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+  <div class="text-center">You currently do not have any appointment!</div>
+  <% end %>
+
+</div>
+
+<div id="Tokyo" class="tabcontent">
+  <h3>Available Appointments</h3>
+  <div>
+    <%= month_calendar(events: @avai_appts, attribute: :starttime) do |date, appointments| %>
+      <%= date.strftime("%d") %>
+      <% appointments.each do |a| %>
+        <div>
+        <%if !a.booked %> 
+          <%=link_to a.get_time, appointment_path(a), class:"badge badge-success"%>
+        <% end %>
+      </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+
+  </div>
+</div>
+<script>
+  function openCity(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  // get all the tabcontent turning off 
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  // get all the tablink turning off
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  // get the one tabcontent turning on 
+  document.getElementById(cityName).style.display = "block";
+  // get the link turning on 
+  evt.currentTarget.className += " active";
+}
+
+// Get the element with id="defaultOpen" and click on it
+  document.getElementById("defaultOpen").click();
+</script>
+

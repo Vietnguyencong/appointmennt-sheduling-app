@@ -1,0 +1,154 @@
+<div class="container">
+<%if current_user%>
+    <%if current_user.admin%>
+        <h4 class="text-center">Available Appointment</h4>
+        <div class="text-center row">
+         <div class="col col-3"><strong>Total User: </strong><%=User.count%></div>
+         <div class="col col-3"><strong>Total Appointment: </strong><%=Appointment.count%></div>
+         <div class="col col-3"><%= link_to 'New Appointment', new_appointment_path , class:"btn btn-primary"%></div>
+         <div class="col col-3"><%= link_to 'Show all Users', home_show_users_path  , class:"btn btn-primary"%></div>
+        </div>
+        <hr>
+        <table class="table">
+        <thead class="thead-dark">
+            <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Time</th>
+            <th scope="col">Student</th>
+            <th scope="col">Status</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Finished</th>
+            <th scope="col">Action</th>
+            <th scope="col">Action</th>
+            
+            </tr>
+        </thead>
+        <tbody>
+         <%@appts.each do |a|%>
+            <tr>
+            <td><%=a.get_date%></td>
+            <td><%=a.get_time%></td>
+            <%if a.user%>
+            <td><%=a.user.name%></td>
+            <td>Booked</td>
+            <% else %>
+            <td>NULL</td>
+            <td>Not Yet</td>
+            <% end %>
+            <td class="edit-admin">
+                <%= link_to 'Edit', edit_appointment_path(a) %>
+                <%= link_to ' | Destroy ', a, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            </td>
+            <td>
+                <%if a.finsihed %>
+                <p class ="badge badge-success">Finished</p>
+                <% else %>
+                <p class ="badge badge-primary ">Comming</p>
+                <% end %>
+            </td>
+            <td>
+                <%= link_to '| finish', set_finish_appointment_path(a), method: :put, data: { confirm: 'Are you sure?' } %></td>
+            </td>
+       
+            
+            <td>
+                <%= link_to 'Un_finish', set_un_finish_appointment_path(a), method: :put %></td>
+            </td>
+            </tr>
+        <% end %>
+        </tbody>
+        </table>
+
+<div class="tab">
+  <button class="tablinks" onclick="openCity(event, 'London')" id="defaultOpen">All</button>
+  <button class="tablinks" onclick="openCity(event, 'Paris')">Available</button>
+  <button class="tablinks" onclick="openCity(event, 'Tokyo')">Booked</button>
+</div>
+
+<div id="London" class="tabcontent">
+  <h3>All Appointments</h3>
+  <div>
+   <%= month_calendar(events: @appointments, attribute: :starttime) do |date, appointments| %>
+    <%= date.strftime("%d") %>
+    <% appointments.each do |a| %>
+      <div>
+      <%if !a.finsihed%>
+        <%if !a.booked%>
+          <%=link_to a.get_time, appointment_path(a), class:"badge badge-success"%>
+        <% else %>
+          <%=link_to a.get_time, appointment_path(a), class:"badge badge-info"%>
+        <% end %>
+      <% else %>
+           <%=link_to a.get_time, appointment_path(a), class:"badge badge-dark"%>
+      <% end %>
+    </div>
+    <% end %>
+  <% end %>
+  
+  </div>
+</div>
+
+<div id="Paris" class="tabcontent">
+  <h3>Available Appointments</h3>
+  <%if current_user%>
+    <div>
+      <%= month_calendar(events: @avai_appts, attribute: :starttime) do |date, appointments| %>
+        <%= date.strftime("%d") %>
+        <% appointments.each do |a| %>
+          <div>
+           <%=link_to a.get_time, appointment_path(a), class:"badge badge-success"%>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+  <div class="text-center">You currently do not have any appointment!</div>
+  <% end %>
+
+</div>
+
+<div id="Tokyo" class="tabcontent">
+  <h3>Booked Appointments</h3>
+  <div>
+    <%= month_calendar(events: @booked_appts, attribute: :starttime) do |date, appointments| %>
+      <%= date.strftime("%d") %>
+      <% appointments.each do |a| %>
+        <div>
+          <%=link_to a.get_time, appointment_path(a), class:"badge badge-info"%>
+      </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+
+
+
+    <% else %>
+    You not allow to view this page 
+    <% end %>
+<%end%>
+
+</div>
+<script>
+  function openCity(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  // get all the tabcontent turning off 
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  // get all the tablink turning off
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  // get the one tabcontent turning on 
+  document.getElementById(cityName).style.display = "block";
+  // get the link turning on 
+  evt.currentTarget.className += " active";
+}
+
+// Get the element with id="defaultOpen" and click on it
+  document.getElementById("defaultOpen").click();
+</script>

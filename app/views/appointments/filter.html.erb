@@ -1,0 +1,118 @@
+<div class="container">
+<div style="margin-left:15px">
+  <%if current_user%>
+    <div class="profile row" >
+      <div class=" col-4" style="font-size: 20px">
+        <div><strong>Name</strong>: <%=current_user.name%></div>
+        <div><strong>Email</strong>: <%=current_user.email%></div>
+        <div><strong>Student Id</strong>: <%=current_user.student_id%></div>
+        <div><strong>Class session</strong>: <%=current_user.class_session%></div>
+        <%=link_to 'Edit', edit_user_registration_path ,class:"btn btn-primary"%>
+      </div>
+      <div class="col-6">
+        <%if !current_user.booked%>
+          <div style="font-size:15px">You currently don't have any comming appointment</div>
+        <% else %>
+          <div class="text-center" style="font-size:15px">Thank you for scheduling the appointment! You should recieve an confirmation email now</div>
+        <% end %>
+        <hr>
+        <table class="table">
+          <thead class="thead-dark">
+            <tr class="">
+              <th scope="col">Date</th>
+              <th scope="col">Time</th>
+              <th scope="col">Unbook</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+           <% @user_appts.each do |appt| %>
+              <tr>
+                <td><%= appt.date%></td>
+                <td><%= appt.time%></td>
+                <%if !appt.finsihed%>
+                <td><%= link_to "Unbook", unbook_appointment_path(appt), method: :put, class:"",:data => {:confirm => 'Are you sure you want to UNBOOK this?'} %></td>
+                <td class="badge badge-primary">Comming</td>
+                <% else %>
+                <td></td>
+                <td class = "badge badge-success">Finished</td>
+                <% end %>
+              </tr>
+              <tr>
+                <td><strong>Your Questions: </strong></td>
+                <td colspan="2"><%=appt.questions%></td>
+              </tr> 
+            <% end %>
+          </tbody>
+          </table> 
+       
+      </div>
+       
+    </div>
+  <% else %>
+  <br>
+  <h4 class="text-center">Login to schedule an appointment!</h4><br>
+    <p class="text-center">vietdbm@gmail.com</p>
+  <% end %>
+<br>
+ <hr>
+</div> <br>
+<%=render 'appointments/filter_form'%>
+
+<%= month_calendar(events: @appointments, attribute: :starttime) do |date, appointments| %>
+  <%= date.strftime("%d") %>
+  <% appointments.each do |a| %>
+    <div>
+    <%if !a.booked%>
+        <button type="button" class="badge badge-success" data-toggle="modal" data-target="#exampleModalCenter">
+          <%=a.get_time%>
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle"> Have any questions for me? Type it below so I can prepare it</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <%= form_with(model: a, local: true) do |form| %>
+                      <% if a.errors.any? %>
+                        <div id="error_explanation">
+                          <h2><%= pluralize(a.errors.count, "error") %> prohibited this appointment from being saved:</h2>
+                          <ul>
+                            <% a.errors.full_messages.each do |message| %>
+                              <li><%= message %></li>
+                            <% end %>
+                          </ul>
+                        </div>
+                      <% end %>
+                      <div class="form-group">
+                        <%= form.label :questions %>
+                        <%= form.text_area :questions,size: "30x10", class:"form-control" %>
+                      </div>
+                      <div class="actions">
+                        <%= form.submit "BOOK" %>
+                      </div>
+                  <% end %>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      <% else %>
+      <span style="color:" class="badge badge-dark"><%=a.get_time%></span>
+      <% end %>
+  </div>
+  <% end %>
+<% end %>
+
+
+
+
+  
+
+</div>

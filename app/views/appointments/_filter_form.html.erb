@@ -1,0 +1,12 @@
+
+<%= form_with(url: root_path, method: "get") do %>
+  <%=check_box_tag(:Available)%>
+  <%=label_tag(:Not_book, "Available")%>
+  <%=check_box_tag(:Book)%>
+  <%=label_tag(:Book, "Booked")%>
+  <%=check_box_tag(:New)%>
+  <%=label_tag(:New, "New")%>
+  <%=check_box_tag(:Old)%>
+  <%=label_tag(:Old, "Old")%>
+  <%= submit_tag("looking") %>
+<% end %>

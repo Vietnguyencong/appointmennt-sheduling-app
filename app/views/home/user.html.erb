@@ -1,0 +1,90 @@
+
+<div class="container">
+<p id="notice" class="text-center"><%= notice %></p>
+  <br>
+  <div>
+    <%=link_to 'back', home_admin_view_path, class:"btn btn-primary", style:"margin-left:0px;padding:5px"%>
+  </div>
+  <div class="profile row" >
+      <div class=" col" style="">
+        <%= image_tag(@user.display_avatar, {:style => "width:100px;"})%> 
+        <%=link_to 'Edit', edit_user_registration_path ,class:"btn btn-primary"%>
+        <div><strong>Name</strong>: <%=@user.name%></div>
+        <div><strong>Email</strong>: <%=@user.email%></div>
+        <div><strong>Student Id</strong>: <%=@user.student_id%></div>
+        <div><strong>Class session</strong>: <%=@user.class_session%></div>
+      </div>
+      <div class="col">
+        <%if !current_user.booked%>
+          <div style="">You currently don't have any comming appointment</div>
+        <% else %>
+          <div class="text-center" style="">Thank you for scheduling the appointment! You should recieve an confirmation email now</div>
+        <% end %>
+        <hr>
+        <table class="table">
+          <thead class="thead-dark">
+            <tr class="">
+              <th scope="col">Date</th>
+              <th scope="col">Time</th>
+              <th scope="col">Unbook</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+           <% @user_appts.each do |appt| %>
+              <tr>
+                <td><%= appt.date%></td>
+                <td><%= appt.time%></td>
+                <%if !appt.finsihed%>
+                <td><%= link_to "Unbook", unbook_appointment_path(appt), method: :put, class:"",:data => {:confirm => 'Are you sure you want to UNBOOK this?'} %></td>
+                <td class="badge badge-primary">Comming</td>
+                <% else %>
+                <td></td>
+                <td class = "badge badge-success">Finished</td>
+                <% end %>
+              </tr>
+              <tr>
+                <td><strong>Your Questions: </strong></td>
+                <td colspan="2"><%=appt.questions%></td>
+              </tr> 
+            <% end %>
+          </tbody>
+          </table> 
+       
+      </div>
+       
+    </div>
+  <!--profile images: images gallery-->
+  <hr>
+  <p id="notice" class="text-center"><%= notice %></p>
+  <%= form_with(url:upload_image_user_path(@user),method: "put", local: true) do |form| %>
+    <% if @user.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@user.errors.count, "error") %> prohibited this image from being saved:</h2>
+        <ul>
+          <% @user.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <div class =" field" style="border:1px">
+      <%= form.label :images%>
+      <%= form.file_field :images, multiple: true%>
+    </div>  
+    <div class="actions">
+      <%= form.submit "Upload" %>
+    </div>
+<% end %>
+  <h4>Photos: <%=@user.images.count%></h4>
+    <div class="row">
+      <%(0...@user.images.count).each do |image|%>
+        <div class="col col-3 d-flex flex-column">
+        <div ><%= image_tag(@user.avatar_thumbnail(image))%></div>
+        <div><%= link_to "delete",delete_user_image_user_path(id:@user.id, image_id:@user.images[image].id), method: :delete, :data => {confirm:'are you sure to delete this image?'}, class:"btn" %></div>
+        <div><%= link_to 'set avatar', main_image_user_path(id:@user.id, image_id:@user.images[image].id), method: :put, class:"btn"%></div>
+        </div>
+      <% end %>
+    </div>
+    <hr>
+ </div>

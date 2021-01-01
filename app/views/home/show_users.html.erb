@@ -1,0 +1,27 @@
+<div class="container">
+<%=link_to 'back', home_admin_view_path, class:"btn btn-primary" %>
+<br>
+    <table class="table">
+    <thead class="thead-dark">
+    <tr class="">
+        <th scope="col">name</th>
+        <th scope="col">email</th>
+        <th scope="col">id</th>
+        <th scope="col">session</th>
+        <th scope="col">show</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <%@users.each do |user|%>
+        <tr>
+        <td><%= user.name%></td>
+        <td><%= user.email%></td>
+        <td><%= user.student_id%></td>
+        <td><%= user.class_session%></td>
+        <td><%=link_to 'Show & Edit', user_path(user) ,class:"btn btn-primary"%></td>
+        </tr> 
+    <% end %>
+    </tbody>
+    </table> 
+</div>

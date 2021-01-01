@@ -1,0 +1,55 @@
+
+<div class="container-fluid" >
+  <div class="col-12 col-sm-4 mx-auto border p-0" style="margin-top: 50px;">
+    <div class="panel panel-default ">
+      <div class="panel-heading">
+        <h4 class="panel-title alert alert-dark text-center m-0 ">Sign Up</h4>
+      </div>
+       <div class="panel-body p-3">
+          <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+            <%= render "devise/shared/error_messages", resource: resource %>
+
+            <div class="form-group">
+              <%= f.label :Cougarnet_Email %><br />
+              <%= f.email_field :email, autofocus: true, autocomplete: "email", class:"form-control" %>
+            </div>
+            <div class="form_group">
+              <%= f.label :Name %><br />
+              <%= f.text_field :name, class:"form-control"  %>
+            </div>
+            <div class="form_group">
+              <%= f.label :Student_ID %><br />
+              <%= f.text_field :student_id, class:"form-control"  %>
+            </div>
+            <div class="form_group">
+              <%= f.label :Class_Session %><br />
+              <%= f.text_field :class_session, class:"form-control"  %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :password %>
+              <% if @minimum_password_length %>
+              <em>(<%= @minimum_password_length %> characters minimum)</em>
+            <% end %><br />
+              <%= f.password_field :password, autocomplete: "new-password", class:"form-control" %>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :password_confirmation %><br />
+              <%= f.password_field :password_confirmation, autocomplete: "new-password", class:"form-control" %>
+            </div>
+
+            <div class="actions">
+              <%= f.submit "Sign up",class:"btn btn-success btn-block" %>
+            </div>
+          <% end %>
+      </div>
+    </div>
+  </div>
+  <hr class="col-12 col-sm-6 mx-auto">
+  <p class="text-center">
+    Already had an account? <a href="/users/sign_in" class="bold">Login</a>
+  </p>
+</div>
+
+
