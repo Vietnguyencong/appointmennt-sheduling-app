@@ -3,7 +3,7 @@
 This app was built for my need as I will need to schedule an appointment with somebody at some point. 
 
 Framework: Ruby on Rails 6 
-Link: https://db-appt-schedule-app.herokuapp.com/
+
 ## Gem used: 
 devise, faker, simple-calendar
 ## Technologies used:
@@ -12,9 +12,13 @@ devise, faker, simple-calendar
 
 ## Features:
 * Scheudling appointments
+
 ![](book.gif)
 * Sending email using mailgun api
+
 * Admin's dashboard
+
 ![](appt.gif)
 * Image uploading 
+
 ![](image_upload.gif)
